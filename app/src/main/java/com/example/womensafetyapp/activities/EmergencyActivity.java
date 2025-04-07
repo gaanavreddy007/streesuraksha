@@ -1,86 +1,132 @@
 package com.example.womensafetyapp.activities;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.womensafetyapp.R;
+import com.example.womensafetyapp.utils.LocationHelper;
+import com.example.womensafetyapp.utils.SMSHelper;
+import com.example.womensafetyapp.dialogs.PasswordDialog;
 
 public class EmergencyActivity extends AppCompatActivity {
 
     private SharedPreferences preferences;
+    private TextView locationStatus, smsStatus;
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private LocationHelper locationHelper;
+    private SMSHelper smsHelper;
+    private boolean isEmergencyActive = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emergency);
 
-        // Initialize SharedPreferences
-        preferences = getSharedPreferences("WomenSafetyPrefs", MODE_PRIVATE);
-
-        // Make activity fullscreen and prevent screen from turning off
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-        // The actual location sharing and SMS sending will be handled by Team Member 2
-        // This is where we'd call those functions
+        initializeComponents();
+        setupWindow();
+        startEmergencyProcedures();
     }
 
-    // Show the password dialog when trying to exit emergency mode
-    public void showPasswordDialog(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.enter_password));
+    private void initializeComponents() {
+        locationStatus = findViewById(R.id.locationStatus);
+        smsStatus = findViewById(R.id.smsStatus);
+        locationHelper = new LocationHelper(this);
+        smsHelper = new SMSHelper(this);
+        preferences = getSharedPreferences("WomenSafetyPrefs", MODE_PRIVATE);
+    }
 
-        // Inflate and set the layout for the dialog
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_password, null);
-        builder.setView(dialogView);
+    private void setupWindow() {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+    }
 
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
-        final EditText passwordInput = dialogView.findViewById(R.id.passwordInput);
+    private void startEmergencyProcedures() {
+        String[] phoneNumbers = new String[3];
+        phoneNumbers[0] = preferences.getString("contact1Phone", "");
+        phoneNumbers[1] = preferences.getString("contact2Phone", "");
+        phoneNumbers[2] = preferences.getString("contact3Phone", "");
 
-        builder.setPositiveButton("OK", (dialog, which) -> {
-            checkPassword(passwordInput.getText().toString());
+        locationHelper.startLocationUpdates(new LocationHelper.LocationCallback() {
+            @Override
+            public void onLocationReceived(Location location) {
+                if (isEmergencyActive) {
+                    String locationUrl = "https://maps.google.com/?q=" + 
+                        location.getLatitude() + "," + location.getLongitude();
+                    String message = "EMERGENCY! I need help! My location: " + locationUrl;
+                    
+                    for (String phone : phoneNumbers) {
+                        if (phone != null && !phone.isEmpty()) {
+                            smsHelper.sendEmergencySMS(phone, message, success -> {
+                                runOnUiThread(() -> {
+                                    smsStatus.setText(success ? 
+                                        R.string.sms_sent : R.string.sms_error);
+                                });
+                            });
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onLocationError(String error) {
+                runOnUiThread(() -> locationStatus.setText(R.string.location_error));
+            }
         });
 
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-
-        builder.show();
+        schedulePeriodicUpdates(phoneNumbers);
     }
 
-    // Check the entered password against the saved password
-    private void checkPassword(String enteredPassword) {
-        String savedPassword = preferences.getString("emergencyPassword", "1234");
-
-        if (enteredPassword.equals(savedPassword)) {
-            // Password correct, deactivate emergency mode
-            deactivateEmergency();
-        } else {
-            // Password incorrect
-            Toast.makeText(this, "Incorrect password", Toast.LENGTH_SHORT).show();
-        }
+    private void schedulePeriodicUpdates(String[] phoneNumbers) {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isEmergencyActive) {
+                    startEmergencyProcedures();
+                    handler.postDelayed(this, 300000); // Update every 5 minutes
+                }
+            }
+        }, 300000);
     }
 
-    // Deactivate emergency and return to the main activity
+    public void showPasswordDialog(View view) {
+        new PasswordDialog(this, success -> {
+            if (success) {
+                deactivateEmergency();
+            }
+        }).show();
+    }
+
     private void deactivateEmergency() {
-        // Return to main activity
+        isEmergencyActive = false;
+        locationHelper.stopLocationUpdates();
+        handler.removeCallbacksAndMessages(null);
+        
         Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }
 
-    // Disable the back button to prevent the user from easily exiting emergency mode
     @Override
     public void onBackPressed() {
-        // Instead of allowing the back press to go through, show the password dialog
         showPasswordDialog(null);
     }
-}
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        isEmergencyActive = false;
+        locationHelper.stopLocationUpdates();
+        handler.removeCallbacksAndMessages(null);
+    }
+} 

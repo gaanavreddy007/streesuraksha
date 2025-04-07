@@ -1,9 +1,21 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.WomenSafetyApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="Theme.WomenSafetyApp" parent="Base.Theme.WomenSafetyApp" />
+    <!-- Emergency theme -->
+    <style name="EmergencyTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/emergencyBackground</item>
+        <item name="colorPrimaryDark">@color/emergencyBackground</item>
+        <item name="colorAccent">@color/white</item>
+        <item name="android:windowBackground">@color/emergencyBackground</item>
+    </style>
+
+    <!-- Fake call theme -->
+    <style name="FakeCallTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/white</item>
+    </style>
 </resources>

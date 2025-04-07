@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_red_dark"
+    android:background="@color/emergencyBackground"
     android:padding="16dp"
     tools:context=".activities.EmergencyActivity">
 
@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:text="EMERGENCY MODE ACTIVE"
-        android:textColor="@android:color/white"
+        android:text="@string/emergency_active"
+        android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -25,8 +25,8 @@
         android:layout_below="@id/emergencyTitle"
         android:layout_marginTop="32dp"
         android:gravity="center"
-        android:text="Sharing your location with emergency contacts..."
-        android:textColor="@android:color/white"
+        android:text="@string/location_sharing"
+        android:textColor="@color/white"
         android:textSize="18sp" />
 
     <TextView
@@ -36,8 +36,8 @@
         android:layout_below="@id/locationStatus"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="SMS alerts sent"
-        android:textColor="@android:color/white"
+        android:text="@string/sms_sent"
+        android:textColor="@color/white"
         android:textSize="18sp" />
 
     <Button
@@ -46,11 +46,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/smsStatus"
         android:layout_marginTop="50dp"
-        android:backgroundTint="@android:color/white"
+        android:backgroundTint="@color/white"
         android:onClick="showPasswordDialog"
         android:padding="16dp"
-        android:text="DEACTIVATE EMERGENCY MODE"
-        android:textColor="@android:color/holo_red_dark"
+        android:text="@string/deactivate_emergency"
+        android:textColor="@color/emergencyBackground"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -60,8 +60,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="32dp"
         android:gravity="center"
-        android:text="Enter password to deactivate emergency mode"
-        android:textColor="@android:color/white"
+        android:text="@string/password_instruction"
+        android:textColor="@color/white"
         android:textSize="16sp" />
 
 </RelativeLayout>
