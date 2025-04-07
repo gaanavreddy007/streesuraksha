@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Women Safety App</string>
+    <string name="activate_emergency">ACTIVATE EMERGENCY MODE</string>
+    <string name="deactivate_emergency">DEACTIVATE EMERGENCY MODE</string>
+    <string name="emergency_active">EMERGENCY MODE ACTIVE</string>
+    <string name="normal_mode">Normal Mode - Voice Recognition Active</string>
+    <string name="voice_instruction">Say \'Help\' or \'Emergency\' to activate emergency mode</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="save_settings">SAVE SETTINGS</string>
+    <string name="emergency_contacts">Emergency Contact Settings</string>
+    <string name="location_sharing">Sharing your location with emergency contacts...</string>
+    <string name="sms_sent">SMS alerts sent</string>
+    <string name="password_instruction">Enter password to deactivate emergency mode</string>
+</resources>

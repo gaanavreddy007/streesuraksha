@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="16dp"
+    tools:context=".activities.MainActivity">
+
+    <TextView
+        android:id="@+id/appTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:text="Women Safety App"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/safetyIcon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@id/appTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:contentDescription="Safety icon"
+        android:src="@android:drawable/ic_dialog_alert" />
+
+    <Button
+        android:id="@+id/emergencyButton"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/safetyIcon"
+        android:layout_marginTop="50dp"
+        android:background="@android:color/holo_red_dark"
+        android:onClick="toggleEmergencyMode"
+        android:text="ACTIVATE EMERGENCY MODE"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/settingsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/emergencyButton"
+        android:layout_marginTop="20dp"
+        android:onClick="openSettings"
+        android:text="Emergency Contact Settings"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/settingsButton"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="Normal Mode - Voice Recognition Active"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:text="Say 'Help' or 'Emergency' to activate emergency mode"
+        android:textStyle="italic" />
+
+</RelativeLayout>
