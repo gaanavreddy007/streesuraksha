@@ -121,6 +121,19 @@ public class MainActivity extends AppCompatActivity {
 
         // Setup Settings Button
         settingsButton.setOnClickListener(v -> openSettings());
+
+        // Setup AI Chatbot Button
+        Button aiChatbotButton = findViewById(R.id.aiChatbotButton);
+        aiChatbotButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ChatbotActivity.class);
+            startActivity(intent);
+            Log.d(TAG, "Chatbot activity opened");
+        });
+
+        // Setup Map Button
+        Button mapButton = findViewById(R.id.mapButton);
+        mapButton.setOnClickListener(v -> openMap());
+
         Log.d(TAG, "Buttons setup completed");
     }
 
@@ -218,5 +231,15 @@ public class MainActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         Toast.makeText(this, "App opened via volume button", Toast.LENGTH_SHORT).show();
+    }
+
+    private void openMap() {
+        if (PermissionHelper.checkAndRequestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION})) {
+            Intent intent = new Intent(this, MapActivity.class);
+            startActivity(intent);
+            Log.d(TAG, "Map activity opened");
+        } else {
+            Toast.makeText(this, R.string.location_permission_required, Toast.LENGTH_LONG).show();
+        }
     }
 }

@@ -59,6 +59,16 @@
             android:excludeFromRecents="true"
             android:exported="false" />
 
+        <activity
+            android:name=".activities.MapActivity"
+            android:label="Map"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <activity
+            android:name=".activities.ChatbotActivity"
+            android:exported="false"
+            android:theme="@style/Theme.WomenSafetyApp" />
+
         <service
             android:name=".services.VoiceRecognitionService"
             android:enabled="true"

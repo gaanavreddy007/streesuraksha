@@ -48,4 +48,8 @@
     <string name="emergency_password">Emergency Password</string>
     <string name="submit">Submit</string>
     <string name="accessibility_service_description">This service helps detect volume button presses to open the Women Safety App in emergency situations. It only detects volume button presses and does not access any other information or data.</string>
+    <string name="location_permission_required">Location permission is required to use the map feature</string>
+    <string name="ai_chatbot">AI Chatbot</string>
+    <string name="map">Map</string>
+    <string name="settings">Settings</string>
 </resources>

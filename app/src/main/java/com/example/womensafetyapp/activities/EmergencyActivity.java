@@ -56,7 +56,7 @@ public class EmergencyActivity extends AppCompatActivity {
         phoneNumbers[1] = preferences.getString("contact2Phone", "");
         phoneNumbers[2] = preferences.getString("contact3Phone", "");
 
-        locationHelper.startLocationUpdates(new LocationHelper.LocationCallback() {
+        locationHelper.startLocationUpdates(new LocationHelper.LocationResultCallback() {
             @Override
             public void onLocationReceived(Location location) {
                 if (isEmergencyActive) {

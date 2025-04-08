@@ -29,7 +29,7 @@ public class LocationHelper {
     private SmsManager smsManager;
     private SharedPreferenceHelper sharedPreferenceHelper;
 
-    public interface LocationCallback {
+    public interface LocationResultCallback {
         void onLocationReceived(Location location);
         void onLocationError(String error);
     }
@@ -42,78 +42,61 @@ public class LocationHelper {
         this.sharedPreferenceHelper = new SharedPreferenceHelper(context);
     }
 
-    public void startLocationUpdates(LocationCallback callback) {
-        this.locationCallback = callback;
-
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) 
-                != PackageManager.PERMISSION_GRANTED) {
-            locationCallback.onLocationError("Location permission not granted");
+    public void startLocationUpdates(LocationResultCallback callback) {
+        if (ActivityCompat.checkSelfPermission(context, 
+            Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            callback.onLocationError("Location permission not granted");
             return;
         }
 
-        locationListener = new LocationListener() {
+        LocationRequest locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY)
+                .setIntervalMillis(10000)
+                .setMinUpdateIntervalMillis(5000)
+                .build();
+
+        locationCallback = new LocationCallback() {
             @Override
-            public void onLocationChanged(Location location) {
-                if (locationCallback != null) {
-                    locationCallback.onLocationReceived(location);
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    callback.onLocationError("Location result is null");
+                    return;
                 }
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-            @Override
-            public void onProviderEnabled(String provider) {}
-
-            @Override
-            public void onProviderDisabled(String provider) {
-                if (locationCallback != null) {
-                    locationCallback.onLocationError("Location provider disabled");
-                }
+                callback.onLocationReceived(locationResult.getLastLocation());
             }
         };
 
         try {
-            locationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
-                10000, // 10 seconds
-                10, // 10 meters
-                locationListener,
-                Looper.getMainLooper()
-            );
-        } catch (Exception e) {
-            if (locationCallback != null) {
-                locationCallback.onLocationError("Error starting location updates: " + e.getMessage());
-            }
+            fusedLocationClient.requestLocationUpdates(locationRequest,
+                    locationCallback,
+                    Looper.getMainLooper());
+        } catch (SecurityException e) {
+            callback.onLocationError("Security exception: " + e.getMessage());
         }
     }
 
     public void stopLocationUpdates() {
-        if (locationListener != null) {
-            locationManager.removeUpdates(locationListener);
-            locationListener = null;
+        if (locationCallback != null) {
+            fusedLocationClient.removeLocationUpdates(locationCallback);
+            locationCallback = null;
         }
-        locationCallback = null;
     }
 
-    public void getCurrentLocation(LocationCallback callback) {
-        this.locationCallback = callback;
-
+    public void getCurrentLocation(LocationResultCallback callback) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) 
                 != PackageManager.PERMISSION_GRANTED) {
-            locationCallback.onLocationError("Location permission not granted");
+            callback.onLocationError("Location permission not granted");
             return;
         }
 
         try {
             Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (lastKnownLocation != null) {
-                locationCallback.onLocationReceived(lastKnownLocation);
+                callback.onLocationReceived(lastKnownLocation);
             } else {
-                locationCallback.onLocationError("No last known location available");
+                callback.onLocationError("No last known location available");
             }
         } catch (Exception e) {
-            locationCallback.onLocationError("Error getting location: " + e.getMessage());
+            callback.onLocationError("Error getting location: " + e.getMessage());
         }
     }
 

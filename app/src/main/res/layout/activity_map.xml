@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- MapView for displaying the map -->
+    <org.osmdroid.views.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Bottom Navigation Panel -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="#CCFFFFFF"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="8dp">
+
+        <!-- TextView for displaying the source location -->
+        <TextView
+            android:id="@+id/sourceTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Source: Current Location"
+            android:textSize="16sp"
+            android:padding="8dp"
+            android:background="#FFFFFF"
+            android:elevation="2dp" />
+
+        <!-- Spinner for selecting the destination -->
+        <Spinner
+            android:id="@+id/destinationSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:padding="8dp"
+            android:layout_marginTop="8dp"
+            android:background="#FFFFFF"
+            android:elevation="2dp" />
+
+        <!-- Button to find the route -->
+        <Button
+            android:id="@+id/findButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Find Route"
+            android:padding="12dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/design_default_color_primary"
+            android:textColor="#FFFFFF"
+            android:elevation="4dp" />
+
+    </LinearLayout>
+</RelativeLayout> 
